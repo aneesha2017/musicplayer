@@ -1,10 +1,14 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:music_app/models/songs_model.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../const/colors.dart';
+import '../dbfunctions.dart';
+import '../models/mostplayed_model.dart';
 
 class Splashscreen extends StatefulWidget {
   const Splashscreen({super.key});
@@ -29,17 +33,25 @@ class _SplashscreenState extends State<Splashscreen> {
     super.initState();
   }
 
-  void requestPermission() {
-    Permission.storage.request();
+  void requestPermission() async {
+    PermissionStatus status = await Permission.storage.request();
+    log(status.toString());
   }
 
   songfetchingfunction() async {
+    bool permissionStatus = await audioQuery.permissionsStatus();
+    log(permissionStatus.toString());
+    if (!permissionStatus) {
+      // check for permission
+      await audioQuery.permissionsRequest();
+    }
     devicesongs = await audioQuery.querySongs(
       sortType: SongSortType.DISPLAY_NAME,
       orderType: OrderType.DESC_OR_GREATER,
       ignoreCase: true,
       uriType: UriType.EXTERNAL,
     );
+    log(devicesongs.toString());
 
     for (var song in devicesongs) {
       if (song.fileExtension == 'mp3') {
@@ -53,7 +65,10 @@ class _SplashscreenState extends State<Splashscreen> {
           songname: audio.displayNameWOExt,
           artist: audio.artist,
           songurl: audio.uri);
-      await SongBox.put(song.id, song);
+      //await SongBox.put(song.id, song);
+      await box.add(song);
+      log('added>>>.');
+      //log(box.values.toList().toString());
     }
   }
 
@@ -68,7 +83,7 @@ class _SplashscreenState extends State<Splashscreen> {
   }
 
   Future<void> gotohome() async {
-    await Future.delayed(const Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 1));
     Navigator.of(context).pushReplacementNamed('bottomnav');
   }
 }

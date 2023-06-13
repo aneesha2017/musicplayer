@@ -11,14 +11,18 @@ import 'package:on_audio_query/on_audio_query.dart';
 import 'functions.dart';
 
 class Miniplayer extends StatefulWidget {
-  const Miniplayer({super.key});
-
+  //int index;
+  Miniplayer({
+    super.key,
+  });
+  //required this.index
   @override
   State<Miniplayer> createState() => _MiniplayerState();
 }
 
 class _MiniplayerState extends State<Miniplayer> {
-  bool isPlaying = true;
+  AssetsAudioPlayer player = AssetsAudioPlayer.withId('0');
+
   Musicplayer playobj = Musicplayer();
   @override
   Widget build(BuildContext context) {
@@ -80,7 +84,8 @@ class _MiniplayerState extends State<Miniplayer> {
                             return IconButton(
                                 onPressed: () async {
                                   log('hai i am previous');
-                                  await Musicplayer.songPrevious();
+                                  await player.previous();
+                                  //await Musicplayer.songPrevious();
                                 },
                                 icon: const Icon(Icons.skip_previous));
                           },
@@ -91,7 +96,8 @@ class _MiniplayerState extends State<Miniplayer> {
                             return IconButton(
                                 onPressed: () async {
                                   log('hai i am previous');
-                                  await Musicplayer.songPlay();
+                                  await player.play();
+                                  //await Musicplayer.songPlay();
                                 },
                                 icon: const Icon(Icons.play_arrow_rounded));
                           },
@@ -102,7 +108,8 @@ class _MiniplayerState extends State<Miniplayer> {
                             return IconButton(
                                 onPressed: () async {
                                   log('hai i am previous');
-                                  await Musicplayer.songPause();
+                                  await player.pause();
+                                  //await Musicplayer.songPause();
                                 },
                                 icon: const Icon(
                                     Icons.pause_circle_filled_rounded));
@@ -112,7 +119,8 @@ class _MiniplayerState extends State<Miniplayer> {
                           player: player,
                           builder: (context, isPlaying) => IconButton(
                               onPressed: () async {
-                                await Musicplayer.songNext();
+                                await player.next();
+                                //await Musicplayer.songNext();
                               },
                               icon: const Icon(Icons.skip_next)),
                         ),

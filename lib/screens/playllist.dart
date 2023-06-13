@@ -20,7 +20,8 @@ class Playlist extends StatelessWidget {
             Container(
               height: 700,
               child: ListView.builder(
-                itemBuilder: (context, index) => const playlist_song_tile(),
+                itemBuilder: (context, index) =>
+                    playlist_song_tile(index: index),
                 itemCount: 10,
               ),
             )

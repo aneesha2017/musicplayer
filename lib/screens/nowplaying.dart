@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:flutter/material.dart';
@@ -26,28 +28,8 @@ class _NowplaymusicState extends State<Nowplaymusic> {
   Duration position = Duration.zero;
   bool isPlaying = true;
   int repeat = 0;
-  final player = AssetsAudioPlayer.withId('0');
 
-  final box = SongBox.getInstance();
-  List<Audio> audios = [];
-  @override
-  void initState() {
-    List<Songs> songDatabase = box.values.toList();
-
-    for (var i in songDatabase) {
-      audios.add(
-        Audio.file(
-          i.songurl!,
-          metas: Metas(
-            title: i.songname,
-            id: i.id.toString(),
-          ),
-        ),
-      );
-    }
-    player.open(Playlist(audios: audios));
-    super.initState();
-  }
+  AssetsAudioPlayer player = AssetsAudioPlayer.withId('0');
 
   @override
   Widget build(BuildContext context) {
@@ -64,6 +46,8 @@ class _NowplaymusicState extends State<Nowplaymusic> {
             ),
             player.builderCurrent(
               builder: (context, playing) {
+                log('/////////////////////');
+                log(playing.audio.audio.metas.id!);
                 return Stack(
                   children: [
                     Container(
@@ -133,14 +117,25 @@ class _NowplaymusicState extends State<Nowplaymusic> {
                         children: [
                           Row(
                             children: [
-                              SizedBox(
-                                width: screenwidth,
-                                child: const ProgressBar(
-                                  baseBarColor: mywhite,
-                                  progress: Duration(seconds: 2),
-                                  total: Duration(seconds: 8),
-                                ),
-                              ),
+                              PlayerBuilder.realtimePlayingInfos(
+                                  player: player,
+                                  builder: (context, RealtimePlayingInfos) {
+                                    duration = RealtimePlayingInfos
+                                        .current!.audio.duration;
+                                    position =
+                                        RealtimePlayingInfos.currentPosition;
+                                    return SizedBox(
+                                      width: screenwidth,
+                                      child: ProgressBar(
+                                        baseBarColor: mywhite,
+                                        progress: position,
+                                        total: duration,
+                                        onSeek: (duration) async {
+                                          await player.seek(duration);
+                                        },
+                                      ),
+                                    );
+                                  })
                             ],
                           ),
                           Row(
@@ -178,7 +173,22 @@ class _NowplaymusicState extends State<Nowplaymusic> {
                                       await Musicplayer.songPlay();
                                     },
                                     icon: const Icon(
-                                        Icons.play_circle_fill_outlined)),
+                                      Icons.play_arrow_outlined,
+                                      color: mywhite,
+                                    )),
+                              ),
+                              PlayerBuilder.isPlaying(
+                                player: player,
+                                builder: (context, isPlaying) => IconButton(
+                                    color: mywhite,
+                                    iconSize: 30,
+                                    onPressed: () async {
+                                      await Musicplayer.songPause();
+                                    },
+                                    icon: const Icon(
+                                      Icons.pause_circle_filled_outlined,
+                                      color: mywhite,
+                                    )),
                               ),
                               PlayerBuilder.isPlaying(
                                 player: player,
@@ -212,7 +222,9 @@ class _NowplaymusicState extends State<Nowplaymusic> {
                               IconButton(
                                 color: mywhite,
                                 iconSize: 30,
-                                onPressed: () {},
+                                onPressed: () async {
+                                  await Musicplayer.songPlay();
+                                },
                                 icon: Icon(Icons.playlist_add_circle),
                               ),
                               IconButton(

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
+import 'package:music_app/dbfunctions.dart';
+import 'package:music_app/models/favorite_model.dart';
+import 'package:music_app/models/mostplayed_model.dart';
 import 'package:music_app/models/songs_model.dart';
 import 'package:music_app/screens/favorites.dart';
 import 'package:music_app/screens/mostplayed.dart';
@@ -11,6 +14,8 @@ import 'package:music_app/screens/search_screen.dart';
 import 'package:music_app/screens/splash_screen.dart';
 import 'package:music_app/widgets/bottom_nav.dart';
 
+import 'models/recent_model.dart';
+
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
@@ -19,7 +24,12 @@ Future main() async {
   }
 
   await Hive.openBox<Songs>('AllSongs');
-
+  Hive.registerAdapter(FavouritesAdapter());
+  openfavourite();
+  Hive.registerAdapter(MostPlayedAdapter());
+  openmostplayeddb();
+  Hive.registerAdapter(RecentAdapter());
+  openrecent();
   runApp(const MyApp());
 }
 
@@ -44,11 +54,11 @@ class MyApp extends StatelessWidget {
       routes: {
         'bottomnav': (context) => const BottomNavigation(),
         'search': (context) => const SearchScreen(),
-        'recent': (context) => const Recent_songs(),
-        'favorite1': (context) => const Favorites(),
+        'recent': (context) => const RecentSongs(),
+        'favorite1': (context) => const FavoritesScreen(),
         'playlist1': (context) => const Playgrid(),
         'playlist': (context) => const Playlist(),
-        'mostplay': (context) => const Mostplayed(),
+        'mostplay': (context) => const MostPlayedScreen(),
       },
     );
   }

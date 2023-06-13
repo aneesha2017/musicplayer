@@ -19,6 +19,7 @@ class _ScreenHomeState extends State<ScreenHome> {
   final box = SongBox.getInstance();
   @override
   Widget build(BuildContext context) {
+    final height1 = MediaQuery.of(context).size.height;
     return SingleChildScrollView(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -28,81 +29,62 @@ class _ScreenHomeState extends State<ScreenHome> {
           ),
           SizedBox(
             height: 150,
-            child: Expanded(
-              child: ListView(
-                scrollDirection: Axis.horizontal,
-                shrinkWrap: true,
-                physics: const ScrollPhysics(),
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      children: [
-                        InkWell(
-                          onTap: () =>
-                              Navigator.of(context).pushNamed('favorite1'),
-                          child: Newcontainer(
-                              folder: 'Favorites',
-                              image: 'lib/assets/Untitled design (1).png'),
+            child: ListView(
+              scrollDirection: Axis.horizontal,
+              shrinkWrap: true,
+              physics: const ScrollPhysics(),
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: [
+                      InkWell(
+                        onTap: () =>
+                            Navigator.of(context).pushNamed('favorite1'),
+                        child: Newcontainer(
+                            folder: 'Favorites',
+                            image: 'lib/assets/Untitled design (1).png'),
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      InkWell(
+                        onTap: () => Navigator.of(context).pushNamed('recent'),
+                        child: Newcontainer(
+                          folder: 'Recent Songs',
+                          image: 'lib/assets/Untitled design (2).png',
                         ),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        InkWell(
-                          onTap: () =>
-                              Navigator.of(context).pushNamed('recent'),
-                          child: Newcontainer(
-                            folder: 'Recent Songs',
-                            image: 'lib/assets/Untitled design (2).png',
-                          ),
-                        ),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        InkWell(
-                          onTap: () =>
-                              Navigator.of(context).pushNamed('playlist1'),
-                          child: Newcontainer(
-                              folder: 'Playlist',
-                              image: 'lib/assets/Untitled design (1).png'),
-                        ),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        InkWell(
-                          onTap: () =>
-                              Navigator.of(context).pushNamed('mostplay'),
-                          child: Newcontainer(
-                              folder: 'mostplayed',
-                              image: 'lib/assets/Untitled design.png'),
-                        ),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                      ],
-                    ),
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      InkWell(
+                        onTap: () =>
+                            Navigator.of(context).pushNamed('playlist1'),
+                        child: Newcontainer(
+                            folder: 'Playlist',
+                            image: 'lib/assets/Untitled design (1).png'),
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      InkWell(
+                        onTap: () =>
+                            Navigator.of(context).pushNamed('mostplay'),
+                        child: Newcontainer(
+                            folder: 'mostplayed',
+                            image: 'lib/assets/Untitled design.png'),
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
-          SizedBox(
-            height: 500,
-            child: ValueListenableBuilder<Box<Songs>>(
-              valueListenable: box.listenable(),
-              builder: ((context, Box<Songs> allSongbox, child) {
-                List<Songs> songlistDb = allSongbox.values.toList();
-                return ListView.builder(
-                  itemBuilder: (context, index) => Homescreensongtile(
-                      image: songlistDb[index].id!,
-                      songurl: songlistDb[index].songurl!,
-                      index: index,
-                      songname: songlistDb[index].songname!),
-                  itemCount: songlistDb.length,
-                );
-              }),
-            ),
-          ),
+          Homescreensongtile(),
         ],
       ),
     );

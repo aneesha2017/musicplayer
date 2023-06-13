@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:music_app/screens/mini_player.dart';
 
 class Library_song_tile extends StatelessWidget {
-  const Library_song_tile({
-    super.key,
-  });
+  int index;
+  Library_song_tile({super.key, required this.index});
 
   @override
   Widget build(BuildContext context) {
@@ -12,7 +11,7 @@ class Library_song_tile extends StatelessWidget {
       onTap: () {
         showBottomSheet(
           context: context,
-          builder: (context) => const Miniplayer(),
+          builder: (context) => Miniplayer(),
         );
       },
       child: Padding(

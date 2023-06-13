@@ -1,19 +1,37 @@
+import 'dart:developer';
+
+import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
+import 'package:music_app/models/songs_model.dart';
 import 'package:music_app/screens/mini_player.dart';
+import 'package:on_audio_query/on_audio_query.dart';
 
 class Search_song_tile extends StatelessWidget {
-  const Search_song_tile({
-    super.key,
-  });
+  int index;
+  List<Songs> searchnew;
+  List<Audio> convertedaudio;
+  Search_song_tile(
+      {super.key,
+      required this.index,
+      required this.searchnew,
+      required this.convertedaudio});
 
   @override
   Widget build(BuildContext context) {
+    AssetsAudioPlayer player = AssetsAudioPlayer.withId('0');
     return GestureDetector(
       onTap: () {
+        player.open(
+          Playlist(audios: convertedaudio, startIndex: index),
+          headPhoneStrategy: HeadPhoneStrategy.pauseOnUnplugPlayOnPlug,
+          showNotification: true,
+        );
+        log('before bottom sheet');
         showBottomSheet(
           context: context,
-          builder: (context) => const Miniplayer(),
+          builder: (context) => Miniplayer(),
         );
+        log('after bottom sheet');
       },
       child: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -32,30 +50,44 @@ class Search_song_tile extends StatelessWidget {
           height: 80,
           child: Center(
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const CircleAvatar(
-                  backgroundImage:
-                      AssetImage('lib/assets/piano-1655558_960_720 (1).jpg'),
-                ),
-                const Padding(
-                  padding: EdgeInsets.only(left: 10),
-                  child: Text("Song Name"),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 45),
-                  child: IconButton(
-                    onPressed: () {},
-                    icon: const Icon(Icons.play_circle_filled),
+                QueryArtworkWidget(
+                  id: searchnew[index].id!,
+                  type: ArtworkType.AUDIO,
+                  nullArtworkWidget: ClipRRect(
+                    borderRadius: BorderRadius.circular(30),
+                    child: Image.asset(
+                      'lib/assets/images.jpg',
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
-                IconButton(
-                  onPressed: () {},
-                  icon: const Icon(Icons.favorite),
+                Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.only(left: 10),
+                    child: Text(
+                      searchnew[index].songname!,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
                 ),
-                IconButton(
-                  onPressed: () {},
-                  icon: const Icon(Icons.library_add),
+                Row(
+                  children: [
+                    IconButton(
+                      onPressed: () {},
+                      icon: const Icon(Icons.play_circle_filled),
+                    ),
+                    IconButton(
+                      onPressed: () {},
+                      icon: const Icon(Icons.favorite),
+                    ),
+                    IconButton(
+                      onPressed: () {},
+                      icon: const Icon(Icons.library_add),
+                    ),
+                  ],
                 ),
               ],
             ),

@@ -17,7 +17,8 @@ class LibraryScreen extends StatelessWidget {
             Container(
               height: 600,
               child: ListView.builder(
-                itemBuilder: (context, index) => const Library_song_tile(),
+                itemBuilder: (context, index) =>
+                    Library_song_tile(index: index),
               ),
             )
           ],
