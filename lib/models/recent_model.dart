@@ -18,3 +18,12 @@ class Recent {
     required this.songurl,
   });
 }
+
+String recentbox = 'RecentlyPlayed';
+
+class RecentlyPlayedBox {
+  static Box<Recent>? _box;
+  static Box<Recent> getInstance() {
+    return _box ??= Hive.box(recentbox);
+  }
+}

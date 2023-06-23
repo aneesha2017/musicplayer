@@ -2,6 +2,8 @@ import 'dart:developer';
 
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:music_app/const/colors.dart';
 import 'package:music_app/dbfunctions.dart';
 import 'package:music_app/models/mostplayed_model.dart';
@@ -13,8 +15,10 @@ import 'package:music_app/screens/mini_player.dart';
 import 'package:music_app/screens/nowplaying.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 
+import '../models/playlist_model.dart';
+
 class Homescreensongtile extends StatefulWidget {
-  Homescreensongtile({
+  const Homescreensongtile({
     // required this.index1,
     super.key,
   });
@@ -33,6 +37,7 @@ class _HomescreensongtileState extends State<Homescreensongtile> {
   final box = SongBox.getInstance();
   late List<Songs> songDatabase;
   List<Audio> audios = [];
+  //Recent? recentsong;
   @override
   void initState() {
     songDatabase = box.values.toList();
@@ -87,17 +92,24 @@ class _HomescreensongtileState extends State<Homescreensongtile> {
                   addMostplayed(index, mostly);
                   log('added to mostly>>>>>>>>.after');
 
-                  Recent rently = Recent(
-                    songname: songlistDb[index].songname!,
-                    songurl: songlistDb[index].songurl!,
-                    artist: songlistDb[index].artist!,
-                    id: songlistDb[index].id!,
+                  Recent recent = Recent(
+                    id: songlistDb[index].id,
+                    artist: songlistDb[index].artist,
+                    songname: songlistDb[index].songname,
+                    songurl: songlistDb[index].songurl,
                   );
-                  log('adding to recent');
-                  log(index.toString());
-                  log(rently.toString());
-                  addRecently(index, rently);
-                  log('added to recently>>>>>>>>.after');
+                  addRecently(recent);
+                  // Recent rently = Recent(
+                  //   songname: songlistDb[index].songname!,
+                  //   songurl: songlistDb[index].songurl!,
+                  //   artist: songlistDb[index].artist!,
+                  //   id: songlistDb[index].id!,
+                  // );
+                  // log('adding to recent');
+                  // log(index.toString());
+                  // log(rently.toString());
+                  // addRecently(index, rently);
+                  // log('added to recently>>>>>>>>.after');
 
                   player.open(
                     Playlist(audios: audios, startIndex: index),
@@ -107,7 +119,9 @@ class _HomescreensongtileState extends State<Homescreensongtile> {
                   );
                   showBottomSheet(
                     context: context,
-                    builder: (context) => Miniplayer(),
+                    builder: (context) => Miniplayer(
+                      index: index,
+                    ),
                   );
                 },
                 leading: QueryArtworkWidget(
@@ -156,7 +170,9 @@ class _HomescreensongtileState extends State<Homescreensongtile> {
                         ),
                       ),
                       IconButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            showPlaylistOptions(context, index);
+                          },
                           icon: const Icon(Icons.library_add)),
                     ],
                   ),
@@ -173,4 +189,214 @@ class _HomescreensongtileState extends State<Homescreensongtile> {
       ),
     );
   }
+}
+
+showPlaylistOptions(BuildContext context, int songindex) {
+  final box = PlaylistSongsbox.getInstance();
+  final songbox = SongBox.getInstance();
+  double vwidth = MediaQuery.of(context).size.width;
+  showDialog(
+      context: context,
+      builder: (context) => StatefulBuilder(builder: (context, setState) {
+            return AlertDialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30),
+              ),
+              insetPadding: EdgeInsets.zero,
+              contentPadding: EdgeInsets.zero,
+              clipBehavior: Clip.antiAliasWithSaveLayer,
+              backgroundColor: mybackgroundColor,
+              alignment: Alignment.bottomCenter,
+              content: SizedBox(
+                height: 200,
+                width: vwidth,
+                child: Padding(
+                  padding:
+                      const EdgeInsets.only(left: 10.0, right: 10, top: 10),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        ValueListenableBuilder<Box<PlaylistSongs>>(
+                            valueListenable: box.listenable(),
+                            builder: (context, Box<PlaylistSongs> playlistSong,
+                                child) {
+                              List<PlaylistSongs> playlistsong =
+                                  playlistSong.values.toList();
+                              return ListView.builder(
+                                  shrinkWrap: true,
+                                  itemCount: playlistsong.length,
+                                  itemBuilder: ((context, index) {
+                                    return ListTile(
+                                      onTap: () {
+                                        PlaylistSongs? playlsong =
+                                            playlistSong.getAt(index);
+                                        List<Songs> playsongdb =
+                                            playlsong!.playlistsong!;
+                                        List<Songs> songdb =
+                                            songbox.values.toList();
+                                        bool isAlreadyAdded = playsongdb.any(
+                                            (element) =>
+                                                element.id ==
+                                                songdb[songindex].id);
+                                        if (!isAlreadyAdded) {
+                                          playsongdb.add(
+                                            Songs(
+                                              songname:
+                                                  songdb[songindex].songname,
+                                              artist: songdb[songindex].artist,
+                                              songurl:
+                                                  songdb[songindex].songurl,
+                                              id: songdb[songindex].id,
+                                            ),
+                                          );
+                                        }
+                                        playlistSong.putAt(
+                                            index,
+                                            PlaylistSongs(
+                                                playlistname:
+                                                    playlistsong[index]
+                                                        .playlistname,
+                                                playlistsong: playsongdb));
+                                        print(
+                                            'song added to${playlistsong[index].playlistname}');
+                                        Navigator.pop(context);
+                                      },
+                                      title: Text(
+                                        playlistsong[index].playlistname!,
+                                        style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    );
+                                  }));
+                            })
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            );
+          }));
+}
+
+showplaylistOptionsadd(BuildContext context) {
+  final myController = TextEditingController();
+  double vwidth = MediaQuery.of(context).size.width;
+  showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(0.0)),
+            insetPadding: EdgeInsets.zero,
+            contentPadding: EdgeInsets.zero,
+            clipBehavior: Clip.antiAliasWithSaveLayer,
+            backgroundColor: mywhite,
+            alignment: Alignment.bottomCenter,
+            content: Container(
+              height: 250,
+              width: vwidth,
+              padding: const EdgeInsets.only(left: 10.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 20),
+                    child: Center(
+                      child: Text(
+                        'New Playlist',
+                        style: TextStyle(
+                            fontSize: 20,
+                            color: Color.fromARGB(255, 250, 249, 249)),
+                      ),
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: Container(
+                          width: vwidth * 0.90,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15),
+                            color: Colors.white,
+                          ),
+                          child: TextFormField(
+                            controller: myController,
+                            decoration: const InputDecoration(
+                              border: InputBorder.none,
+                              fillColor: Colors.white10,
+                              label: Padding(
+                                padding: const EdgeInsets.only(left: 10.0),
+                                child: Text(
+                                  'Enter Playlist Name:',
+                                  style: TextStyle(
+                                      fontSize: 20, color: Colors.black),
+                                ),
+                              ),
+                              // alignLabelWithHint: true,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: Container(
+                          width: vwidth * 0.43,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5.0),
+                            color: Colors.white,
+                          ),
+                          child: TextButton.icon(
+                            icon: const Icon(
+                              Icons.close,
+                              color: Colors.black,
+                            ),
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            label: const Text('Cancel',
+                                style: TextStyle(
+                                    fontSize: 20, color: Colors.black)),
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: Container(
+                          width: vwidth * 0.43,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
+                            color: Colors.white,
+                          ),
+                          child: TextButton.icon(
+                            icon: const Icon(
+                              Icons.done,
+                              color: Colors.black,
+                            ),
+                            onPressed: () {
+                              newplaylist(myController.text);
+                              Navigator.pop(context);
+                            },
+                            label: const Text(
+                              'Done',
+                              style:
+                                  TextStyle(fontSize: 20, color: Colors.black),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
+                ],
+              ),
+            ),
+          ));
 }

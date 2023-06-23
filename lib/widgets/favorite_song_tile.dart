@@ -81,7 +81,9 @@ class _FavouriteSongTileState extends State<FavouriteSongTile> {
                 );
                 showBottomSheet(
                   context: context,
-                  builder: (context) => Miniplayer(),
+                  builder: (context) => Miniplayer(
+                    index: index,
+                  ),
                 );
               },
               leading: QueryArtworkWidget(

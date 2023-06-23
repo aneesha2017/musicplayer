@@ -8,6 +8,7 @@ import 'package:music_app/models/mostplayed_model.dart';
 import 'package:music_app/models/songs_model.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 
+import '../models/playlist_model.dart';
 import '../models/recent_model.dart';
 import '../widgets/home_screen_song_tile.dart';
 
@@ -69,19 +70,20 @@ bool checkFavorite(int index) {
   return isalready;
 }
 
-addRecently(int index, Recent value) async {
-  final box = SongBox.getInstance();
-  List<Songs> allsongs = box.values.toList();
+addRecently(Recent value) {
   List<Recent> list = recentdb.values.toList();
   bool isNot =
-      list.where((element) => element.id == allsongs[index].id).isEmpty;
+      list.where((element) => element.songname == value.songname).isEmpty;
   if (isNot == true) {
-    await recentdb.add(value);
-    log('added');
+    recentdb.add(value);
   } else {
-    int indexRecently = list.indexWhere((element) => element.id == value.id);
+    int index =
+        list.indexWhere((element) => element.songname == value.songname);
+    recentdb.deleteAt(index);
+    //recentdb.delete(value);
     recentdb.add(value);
   }
+  log('added recent now');
 }
 
 addMostplayed(int index, MostPlayed value) async {
@@ -110,4 +112,35 @@ addMostplayed(int index, MostPlayed value) async {
     log(mostplayeddb.values.toList().toString());
     log(list[indexMostly].count.toString());
   }
+}
+
+//////////////////////////////////
+newplaylist(String title) {
+  final playlistbox = PlaylistSongsbox.getInstance();
+  List<PlaylistSongs> dbplaylist = playlistbox.values.toList();
+  bool isAlready =
+      dbplaylist.where((element) => element.playlistname == title).isEmpty;
+  if (isAlready) {
+    List<Songs> playlistsongs = [];
+    playlistbox
+        .add(PlaylistSongs(playlistname: title, playlistsong: playlistsongs));
+  }
+}
+
+addtoplaylist(Songs song, int index) {
+  final playlistbox = PlaylistSongsbox.getInstance();
+  List<PlaylistSongs> dbplayllist = playlistbox.values.toList();
+  print(dbplayllist);
+}
+
+deleteplaylist(int index) {
+  final playlistbox = PlaylistSongsbox.getInstance();
+  playlistbox.deleteAt(index);
+}
+
+deletefromplaylist(int index) {
+  final playlistbox = PlaylistSongsbox.getInstance();
+  playlistbox.delete(index);
+  log('song deleted');
+  log(playlistbox.values.toString());
 }

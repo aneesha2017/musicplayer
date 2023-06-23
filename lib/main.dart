@@ -3,15 +3,18 @@ import 'package:hive_flutter/adapters.dart';
 import 'package:music_app/dbfunctions.dart';
 import 'package:music_app/models/favorite_model.dart';
 import 'package:music_app/models/mostplayed_model.dart';
+import 'package:music_app/models/playlist_model.dart';
 import 'package:music_app/models/songs_model.dart';
+import 'package:music_app/screens/about.dart';
 import 'package:music_app/screens/favorites.dart';
+import 'package:music_app/screens/libraryhome.dart';
 import 'package:music_app/screens/mostplayed.dart';
-import 'package:music_app/screens/nowplaying.dart';
 import 'package:music_app/screens/playlisthome.dart';
-import 'package:music_app/screens/playllist.dart';
+import 'package:music_app/screens/privacy.dart';
 import 'package:music_app/screens/recent_songs.dart';
 import 'package:music_app/screens/search_screen.dart';
 import 'package:music_app/screens/splash_screen.dart';
+import 'package:music_app/screens/terms.dart';
 import 'package:music_app/widgets/bottom_nav.dart';
 
 import 'models/recent_model.dart';
@@ -30,6 +33,8 @@ Future main() async {
   openmostplayeddb();
   Hive.registerAdapter(RecentAdapter());
   openrecent();
+  Hive.registerAdapter(PlaylistSongsAdapter());
+  await Hive.openBox<PlaylistSongs>('playlist');
   runApp(const MyApp());
 }
 
@@ -56,9 +61,12 @@ class MyApp extends StatelessWidget {
         'search': (context) => const SearchScreen(),
         'recent': (context) => const RecentSongs(),
         'favorite1': (context) => const FavoritesScreen(),
-        'playlist1': (context) => const Playgrid(),
-        'playlist': (context) => const Playlist(),
+        //'playlist1': (context) =>  Playgrid(),
+        'playlist': (context) => Playgrid(),
         'mostplay': (context) => const MostPlayedScreen(),
+        'abouts': (context) => const AboutUs(),
+        'privacy': (context) => const PrivacyPolicy(),
+        'terms': (context) => const Terms(),
       },
     );
   }

@@ -27,7 +27,9 @@ class Mydrawer extends StatelessWidget {
                 IconButton(
                   color: Colors.white,
                   iconSize: 30,
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pushNamed(context, 'abouts');
+                  },
                   icon: const Icon(Icons.info),
                 ),
                 const Text('About'),
@@ -38,7 +40,9 @@ class Mydrawer extends StatelessWidget {
                 IconButton(
                   color: Colors.white,
                   iconSize: 30,
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pushNamed(context, 'privacy');
+                  },
                   icon: const Icon(Icons.privacy_tip_outlined),
                 ),
                 const Text('PrivacyPolicy'),
@@ -49,7 +53,9 @@ class Mydrawer extends StatelessWidget {
                 IconButton(
                   color: Colors.white,
                   iconSize: 30,
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pushNamed(context, 'terms');
+                  },
                   icon: const Icon(Icons.gavel_outlined),
                 ),
                 const Text('Terms and Conditions'),

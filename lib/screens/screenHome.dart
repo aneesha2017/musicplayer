@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:music_app/screens/mini_player.dart';
+import 'package:music_app/screens/playlisthome.dart';
 import 'package:slide_drawer/slide_drawer.dart';
 import '../models/songs_model.dart';
 import '../widgets/home_screen_song_tile.dart';
@@ -59,8 +60,11 @@ class _ScreenHomeState extends State<ScreenHome> {
                         width: 10,
                       ),
                       InkWell(
-                        onTap: () =>
-                            Navigator.of(context).pushNamed('playlist1'),
+                        onTap: () => Navigator.push(context, MaterialPageRoute(
+                          builder: (context) {
+                            return Playgrid();
+                          },
+                        )),
                         child: Newcontainer(
                             folder: 'Playlist',
                             image: 'lib/assets/Untitled design (1).png'),

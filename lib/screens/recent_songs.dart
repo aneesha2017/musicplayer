@@ -15,6 +15,7 @@ class RecentSongs extends StatefulWidget {
 
 class _RecentSongsState extends State<RecentSongs> {
   final AssetsAudioPlayer audioPlayer = AssetsAudioPlayer.withId('0');
+  final box = RecentlyPlayedBox.getInstance();
   List<Audio> songs = [];
   List<Recent> recentsongs = [];
   @override
@@ -27,10 +28,11 @@ class _RecentSongsState extends State<RecentSongs> {
               artist: element.artist,
               id: element.id.toString())));
     }
-    // TODO: implement initState
+
     super.initState();
   }
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: mybackgroundColor,
@@ -38,7 +40,7 @@ class _RecentSongsState extends State<RecentSongs> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            myappbar(title: 'Recent Songs', trailing: const SizedBox()),
+            Myappbar(title: 'Recent Songs', trailing: const SizedBox()),
             const SizedBox(
               child: RecentSongtile(),
             )

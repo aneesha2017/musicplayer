@@ -51,7 +51,7 @@ class _MostPlayedScreenState extends State<MostPlayedScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            myappbar(title: 'Most Played', trailing: const SizedBox()),
+            Myappbar(title: 'Most Played', trailing: const SizedBox()),
             SizedBox(
               child: Most_song_tile(),
             )

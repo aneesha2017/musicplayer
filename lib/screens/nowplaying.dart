@@ -5,17 +5,19 @@ import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:music_app/const/colors.dart';
 import 'package:music_app/const/variables.dart';
-import 'package:music_app/models/songs_model.dart';
 import 'package:music_app/screens/common%20widget/myappbar.dart';
+import 'package:music_app/widgets/home_screen_song_tile.dart';
 import 'package:on_audio_query/on_audio_query.dart';
-
+import '../models/songs_model.dart';
 import 'functions.dart';
 import 'mini_player.dart';
 
 class Nowplaymusic extends StatefulWidget {
   //final List<Songs> nowplaysongs;
+  final int index;
   Nowplaymusic({
     super.key,
+    required this.index,
     // required this.nowplaysongs,
   });
 
@@ -24,12 +26,16 @@ class Nowplaymusic extends StatefulWidget {
 }
 
 class _NowplaymusicState extends State<Nowplaymusic> {
+  final box = SongBox.getInstance();
+
   Duration duration = Duration.zero;
   Duration position = Duration.zero;
   bool isPlaying = true;
   int repeat = 0;
 
   AssetsAudioPlayer player = AssetsAudioPlayer.withId('0');
+  //final LoopMode loopMode = AssetsAudioPlayer.loop;
+  bool isRepeatEnabled = false;
 
   @override
   Widget build(BuildContext context) {
@@ -40,8 +46,8 @@ class _NowplaymusicState extends State<Nowplaymusic> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            myappbar(
-              title: 'play Beats',
+            Myappbar(
+              title: 'My Tunes',
               trailing: const SizedBox(),
             ),
             player.builderCurrent(
@@ -201,18 +207,25 @@ class _NowplaymusicState extends State<Nowplaymusic> {
                                     icon: const Icon(Icons.skip_next_outlined)),
                               ),
                               IconButton(
-                                  color: mywhite,
-                                  iconSize: 30,
-                                  onPressed: () {
-                                    if (repeat % 2 == 0) {
+                                color: mywhite,
+                                iconSize: 30,
+                                onPressed: () {
+                                  setState(() {
+                                    isRepeatEnabled = !isRepeatEnabled;
+                                    if (isRepeatEnabled) {
                                       player.setLoopMode(LoopMode.single);
-                                      repeat++;
                                     } else {
                                       player.setLoopMode(LoopMode.none);
-                                      repeat++;
                                     }
-                                  },
-                                  icon: const Icon(Icons.repeat)),
+                                    log('repeat is working');
+                                  });
+                                },
+                                icon: Icon(
+                                  isRepeatEnabled
+                                      ? Icons.repeat_one
+                                      : Icons.repeat,
+                                ),
+                              ),
                             ],
                           ),
                           const SizedBox(height: 20),
@@ -222,16 +235,33 @@ class _NowplaymusicState extends State<Nowplaymusic> {
                               IconButton(
                                 color: mywhite,
                                 iconSize: 30,
-                                onPressed: () async {
-                                  await Musicplayer.songPlay();
+                                onPressed: () {
+                                  showPlaylistOptions(context, widget.index);
                                 },
-                                icon: Icon(Icons.playlist_add_circle),
+                                icon: const Icon(Icons.playlist_add_circle),
                               ),
                               IconButton(
                                 color: mywhite,
                                 iconSize: 30,
-                                onPressed: () {},
-                                icon: Icon(Icons.favorite_border_outlined),
+                                onPressed: () {
+                                  if (checkFavorite(widget.index)) {
+                                    log('fav clicked>>>>>');
+                                    log(checkFavorite(widget.index).toString());
+                                    removeFavour(widget.index);
+                                  } else {
+                                    addfavour(widget.index);
+                                    log('fav clicked>>>>>');
+                                  }
+                                  //log('pressed remove?????/');
+                                  //removeFavour(index);
+                                  setState(() {});
+                                },
+                                icon: Icon(
+                                  (checkFavorite(widget.index))
+                                      ? Icons.favorite
+                                      : Icons.favorite_border,
+                                  color: mywhite,
+                                ),
                               ),
                             ],
                           )

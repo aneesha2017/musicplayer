@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:music_app/const/colors.dart';
 
-class myappbar extends StatelessWidget {
-  myappbar({Key? key, required this.title, required this.trailing})
+class Myappbar extends StatelessWidget {
+  Myappbar({Key? key, required this.title, required this.trailing})
       : super(key: key);
   String title;
   Widget trailing;

@@ -54,7 +54,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              myappbar(title: 'Favorites', trailing: const SizedBox()),
+              Myappbar(title: 'Favorites', trailing: const SizedBox()),
               Padding(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 8.0, vertical: 15),

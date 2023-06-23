@@ -29,7 +29,9 @@ class Search_song_tile extends StatelessWidget {
         log('before bottom sheet');
         showBottomSheet(
           context: context,
-          builder: (context) => Miniplayer(),
+          builder: (context) => Miniplayer(
+            index: index,
+          ),
         );
         log('after bottom sheet');
       },

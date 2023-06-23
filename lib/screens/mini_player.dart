@@ -11,9 +11,10 @@ import 'package:on_audio_query/on_audio_query.dart';
 import 'functions.dart';
 
 class Miniplayer extends StatefulWidget {
-  //int index;
+  final int index;
   Miniplayer({
     super.key,
+    required this.index,
   });
   //required this.index
   @override
@@ -29,8 +30,10 @@ class _MiniplayerState extends State<Miniplayer> {
     return GestureDetector(
       onTap: () {
         //  Navigator.of(context).pushNamed('nowplay');
-        Navigator.of(context)
-            .push(MaterialPageRoute(builder: (context) => Nowplaymusic()));
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => Nowplaymusic(
+                  index: widget.index,
+                )));
       },
       child: Container(
           height: 130,

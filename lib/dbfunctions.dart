@@ -1,7 +1,6 @@
 import 'package:hive/hive.dart';
 import 'package:music_app/models/favorite_model.dart';
 import 'package:music_app/models/mostplayed_model.dart';
-
 import 'models/recent_model.dart';
 
 late Box<Favourites> favouritedb;
@@ -16,5 +15,5 @@ openmostplayeddb() async {
 
 late Box<Recent> recentdb;
 openrecent() async {
-  recentdb = await Hive.openBox<Recent>('Recent');
+  recentdb = await Hive.openBox<Recent>('RecentlyPlayed');
 }

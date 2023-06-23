@@ -18,7 +18,7 @@ class BottomNavigation extends StatefulWidget {
 class _BottomNavigationState extends State<BottomNavigation> {
   int _currentindex = 0;
   final tabs = [
-    ScreenHome(),
+    const ScreenHome(),
     const SearchScreen(),
     const LibraryScreen(),
   ];
@@ -28,13 +28,19 @@ class _BottomNavigationState extends State<BottomNavigation> {
       endDrawer: const Mydrawer(),
       appBar: PreferredSize(
           preferredSize: const Size.fromHeight(60),
-          child: myappbar(
+          child: Myappbar(
               title: 'MyTunes',
               trailing: IconButton(
                 icon: const Icon(
-                  Icons.menu,
+                  Icons.settings_rounded,
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const Mydrawer(),
+                      ));
+                },
               ))),
       backgroundColor: mybackgroundColor,
       body: tabs[_currentindex],

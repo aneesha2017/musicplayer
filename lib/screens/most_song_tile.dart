@@ -63,7 +63,7 @@ class _Most_song_tileState extends State<Most_song_tile> {
   Widget build(BuildContext context) {
     return ListView.separated(
       shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
+      physics: const NeverScrollableScrollPhysics(),
       itemCount: mostplayedsongs.length,
       itemBuilder: (context, index) {
         log(index.toString());
@@ -91,7 +91,9 @@ class _Most_song_tileState extends State<Most_song_tile> {
                 );
                 showBottomSheet(
                   context: context,
-                  builder: (context) => Miniplayer(),
+                  builder: (context) => Miniplayer(
+                    index: index,
+                  ),
                 );
               },
               leading: QueryArtworkWidget(
