@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:music_app/const/colors.dart';
+import 'package:share_plus/share_plus.dart';
 
 class Mydrawer extends StatelessWidget {
   const Mydrawer({super.key});
@@ -16,7 +17,10 @@ class Mydrawer extends StatelessWidget {
                 IconButton(
                   color: Colors.white,
                   iconSize: 30,
-                  onPressed: () {},
+                  onPressed: () {
+                    Share.share(
+                        'https://play.google.com/store/apps/details?id=in.brototype.mytunes');
+                  },
                   icon: const Icon(Icons.share),
                 ),
                 const Text('Share'),
